@@ -21,4 +21,10 @@ public class Topico {
     private Usuario autor;
     private Curso curso;
     private List<Resposta> respostas = new ArrayList<>();
+
+    public Topico(String titulo, String duvida, Curso curso) {
+        this.titulo = titulo;
+        this.mensagem = duvida;
+        this.curso = curso;
+    }
 }
