@@ -6,7 +6,6 @@ import br.com.alura.forum.repository.TopicoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -20,9 +19,18 @@ public class TopicoController {
 
     private TopicoRepository topicoRepository;
 
+//    @GetMapping
+//    public Page<TopicoDto> listar(Pageable pageable) {
+//        return topicoRepository.findAll(pageable).map(topico -> modelMapper.converter(topico));
+//    }
+
     @GetMapping
-    @ResponseBody
-    public List<TopicoDto> listar() {
-        return modelMapper.toCollectionDto(topicoRepository.findAll());
+    public List<TopicoDto> listar(String nomeCurso) {
+        if (nomeCurso == null) {
+            return modelMapper.toCollectionDto(topicoRepository.findAll());
+        }
+        else {
+            return modelMapper.toCollectionDto(topicoRepository.findByCursoNome(nomeCurso));
+        }
     }
 }

@@ -18,4 +18,8 @@ public class ModelMapperAssembler {
     public List<TopicoDto> toCollectionDto(List<Topico> topicos) {
         return topicos.stream().map(topico -> modelMapper.map(topico, TopicoDto.class)).collect(Collectors.toList());
     }
+
+    public TopicoDto converter(Topico topico) {
+        return modelMapper.map(topico, TopicoDto.class);
+    }
 }

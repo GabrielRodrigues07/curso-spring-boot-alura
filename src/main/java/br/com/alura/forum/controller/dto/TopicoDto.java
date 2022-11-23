@@ -13,8 +13,4 @@ public class TopicoDto {
     private String mensagem;
     private OffsetDateTime dataCriacao;
 
-//    public static List<TopicoDto> converter(List<Topico> topicos) {
-//        TopicoDto topicoDto = modelMapper.map(topicos, TopicoDto.class);
-//        return
-//    }
 }
