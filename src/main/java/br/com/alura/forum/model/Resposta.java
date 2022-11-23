@@ -3,7 +3,7 @@ package br.com.alura.forum.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,7 +20,7 @@ public class Resposta {
 
     @ManyToOne
     private Topico topico;
-    private LocalDateTime dataCriacao = LocalDateTime.now();
+    private OffsetDateTime dataCriacao = OffsetDateTime.now();
 
     @ManyToOne
     private Usuario autor;
