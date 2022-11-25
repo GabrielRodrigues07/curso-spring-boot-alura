@@ -1,12 +1,11 @@
 package br.com.alura.forum.assembler;
 
+import br.com.alura.forum.controller.dto.AtualizacaoTopicoDtoRecebido;
 import br.com.alura.forum.controller.dto.DetalhesDoTopicoDto;
 import br.com.alura.forum.controller.dto.RespostaDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
-import br.com.alura.forum.controller.dto.TopicoDtoRecebido;
 import br.com.alura.forum.model.Resposta;
 import br.com.alura.forum.model.Topico;
-import br.com.alura.forum.repository.CursoRepository;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -34,5 +33,9 @@ public class ModelMapperAssembler {
 
     public List<RespostaDto> toRespostaDto(List<Resposta> respostas) {
         return respostas.stream().map(resposta -> modelMapper.map(resposta, RespostaDto.class)).collect(Collectors.toList());
+    }
+
+    public void atualizar(Topico topico, AtualizacaoTopicoDtoRecebido topicoDtoRecebido) {
+        modelMapper.map(topicoDtoRecebido, topico);
     }
 }

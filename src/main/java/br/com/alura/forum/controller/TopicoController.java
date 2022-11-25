@@ -1,6 +1,7 @@
 package br.com.alura.forum.controller;
 
 import br.com.alura.forum.assembler.ModelMapperAssembler;
+import br.com.alura.forum.controller.dto.AtualizacaoTopicoDtoRecebido;
 import br.com.alura.forum.controller.dto.DetalhesDoTopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDtoRecebido;
@@ -9,6 +10,7 @@ import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -50,8 +52,16 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
-    public DetalhesDoTopicoDto detalhar(@PathVariable Long id) {
+    public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
         Topico topico = topicoRepository.getReferenceById(id);
-        return modelMapper.toDetalheDto(topico);
+        return ResponseEntity.ok().body(modelMapper.toDetalheDto(topico));
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoDtoRecebido topicoDtoRecebido) {
+        Topico topico = topicoRepository.getReferenceById(id);
+        modelMapper.atualizar(topico, topicoDtoRecebido);
+        return ResponseEntity.noContent().build();
     }
 }
