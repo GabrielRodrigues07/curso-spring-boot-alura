@@ -45,6 +45,7 @@ public class TopicoController {
     }
 
     @PostMapping
+    @Transactional
     public ResponseEntity<TopicoDto> cadastrar(@RequestBody @Valid TopicoDtoRecebido topico, UriComponentsBuilder builder) {
         Topico topicoSalvo = topicoRepository.save(topico.converter(cursoRepository));
         URI uri = builder.path("/topicos/{id}").buildAndExpand(topicoSalvo.getId()).toUri();
@@ -63,5 +64,12 @@ public class TopicoController {
         Topico topico = topicoRepository.getReferenceById(id);
         modelMapper.atualizar(topico, topicoDtoRecebido);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<Void> remover(@PathVariable Long id) {
+        topicoRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 }
