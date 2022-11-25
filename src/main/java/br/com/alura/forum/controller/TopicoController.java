@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/topicos")
@@ -38,8 +39,7 @@ public class TopicoController {
     public ResponseEntity<List<TopicoDto>> listar(String nomeCurso) {
         if (nomeCurso == null) {
             return ResponseEntity.ok().body(modelMapper.toCollectionDto(topicoRepository.findAll()));
-        }
-        else {
+        } else {
             return ResponseEntity.ok().body(modelMapper.toCollectionDto(topicoRepository.findByCursoNome(nomeCurso)));
         }
     }
@@ -54,22 +54,30 @@ public class TopicoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<DetalhesDoTopicoDto> detalhar(@PathVariable Long id) {
-        Topico topico = topicoRepository.getReferenceById(id);
-        return ResponseEntity.ok().body(modelMapper.toDetalheDto(topico));
+        Optional<Topico> optionalTopico = topicoRepository.findById(id);
+        return optionalTopico.map(topico -> ResponseEntity.ok().body(modelMapper.toDetalheDto(topico))).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> atualizar(@PathVariable Long id, @RequestBody @Valid AtualizacaoTopicoDtoRecebido topicoDtoRecebido) {
-        Topico topico = topicoRepository.getReferenceById(id);
-        modelMapper.atualizar(topico, topicoDtoRecebido);
-        return ResponseEntity.noContent().build();
+
+        Optional<Topico> optionalTopico = topicoRepository.findById(id);
+        if (optionalTopico.isPresent()) {
+            modelMapper.atualizar(optionalTopico.get(), topicoDtoRecebido);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<Void> remover(@PathVariable Long id) {
-        topicoRepository.deleteById(id);
-        return ResponseEntity.ok().build();
+        Optional<Topico> optionalTopico = topicoRepository.findById(id);
+        if (optionalTopico.isPresent()) {
+            topicoRepository.deleteById(optionalTopico.get().getId());
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.notFound().build();
     }
 }
