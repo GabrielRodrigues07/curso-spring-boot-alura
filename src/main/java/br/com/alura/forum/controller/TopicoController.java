@@ -1,6 +1,7 @@
 package br.com.alura.forum.controller;
 
 import br.com.alura.forum.assembler.ModelMapperAssembler;
+import br.com.alura.forum.controller.dto.DetalhesDoTopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDtoRecebido;
 import br.com.alura.forum.model.Topico;
@@ -46,5 +47,11 @@ public class TopicoController {
         Topico topicoSalvo = topicoRepository.save(topico.converter(cursoRepository));
         URI uri = builder.path("/topicos/{id}").buildAndExpand(topicoSalvo.getId()).toUri();
         return ResponseEntity.created(uri).body(modelMapper.toDto(topicoSalvo));
+    }
+
+    @GetMapping("/{id}")
+    public DetalhesDoTopicoDto detalhar(@PathVariable Long id) {
+        Topico topico = topicoRepository.getReferenceById(id);
+        return modelMapper.toDetalheDto(topico);
     }
 }

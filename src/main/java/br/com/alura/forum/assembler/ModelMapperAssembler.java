@@ -1,7 +1,10 @@
 package br.com.alura.forum.assembler;
 
+import br.com.alura.forum.controller.dto.DetalhesDoTopicoDto;
+import br.com.alura.forum.controller.dto.RespostaDto;
 import br.com.alura.forum.controller.dto.TopicoDto;
 import br.com.alura.forum.controller.dto.TopicoDtoRecebido;
+import br.com.alura.forum.model.Resposta;
 import br.com.alura.forum.model.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import lombok.AllArgsConstructor;
@@ -23,5 +26,13 @@ public class ModelMapperAssembler {
 
     public TopicoDto toDto(Topico topico) {
         return modelMapper.map(topico, TopicoDto.class);
+    }
+
+    public DetalhesDoTopicoDto toDetalheDto(Topico topico) {
+        return modelMapper.map(topico, DetalhesDoTopicoDto.class);
+    }
+
+    public List<RespostaDto> toRespostaDto(List<Resposta> respostas) {
+        return respostas.stream().map(resposta -> modelMapper.map(resposta, RespostaDto.class)).collect(Collectors.toList());
     }
 }
