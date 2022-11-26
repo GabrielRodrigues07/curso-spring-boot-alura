@@ -9,6 +9,11 @@ import br.com.alura.forum.model.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +21,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -30,19 +34,28 @@ public class TopicoController {
 
     private CursoRepository cursoRepository;
 
-//    @GetMapping
-//    public Page<TopicoDto> listar(Pageable pageable) {
-//        return topicoRepository.findAll(pageable).map(topico -> modelMapper.converter(topico));
-//    }
-
     @GetMapping
-    public ResponseEntity<List<TopicoDto>> listar(String nomeCurso) {
+    public Page<TopicoDto> listar(@RequestParam(required = false) String nomeCurso, @PageableDefault(size = 3, sort = "titulo", direction = Sort.Direction.DESC) Pageable pageable) {
         if (nomeCurso == null) {
-            return ResponseEntity.ok().body(modelMapper.toCollectionDto(topicoRepository.findAll()));
-        } else {
-            return ResponseEntity.ok().body(modelMapper.toCollectionDto(topicoRepository.findByCursoNome(nomeCurso)));
+            return topicoRepository.findAll(pageable).map(topico -> modelMapper.toDto(topico));
         }
+        return topicoRepository.findByCursoNome(nomeCurso, pageable).map(topico -> modelMapper.toDto(topico));
     }
+
+//    @GetMapping
+//    public ResponseEntity<Page> listar(@RequestParam(required = false) String nomeCurso,
+//                                             @RequestParam int pagina,
+//                                             @RequestParam int qtd) {
+//
+//        Pageable paginacao = PageRequest.of(pagina, qtd);
+//
+//
+//        if (nomeCurso == null) {
+//            return ResponseEntity.ok().body(topicoRepository.findAll(paginacao).map(topicos -> modelMapper.toDto(topicos)));
+//        } else {
+//            return ResponseEntity.ok().body(topicoRepository.findByCursoNome(nomeCurso, paginacao).map(topico -> modelMapper.toDto(topico)));
+//        }
+//    }
 
     @PostMapping
     @Transactional
