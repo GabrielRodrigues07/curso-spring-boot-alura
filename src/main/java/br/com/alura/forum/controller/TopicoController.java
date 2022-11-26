@@ -9,6 +9,7 @@ import br.com.alura.forum.model.Topico;
 import br.com.alura.forum.repository.CursoRepository;
 import br.com.alura.forum.repository.TopicoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +36,7 @@ public class TopicoController {
     private CursoRepository cursoRepository;
 
     @GetMapping
+    @Cacheable(value = "listaDeTopicos")
     public Page<TopicoDto> listar(@RequestParam(required = false) String nomeCurso, @PageableDefault(size = 3, sort = "titulo", direction = Sort.Direction.DESC) Pageable pageable) {
         if (nomeCurso == null) {
             return topicoRepository.findAll(pageable).map(topico -> modelMapper.toDto(topico));
