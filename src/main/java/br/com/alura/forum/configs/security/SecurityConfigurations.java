@@ -1,6 +1,7 @@
 package br.com.alura.forum.configs.security;
 
 
+import br.com.alura.forum.repository.UsuarioRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,7 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
     private AutenticacaoService autenticacaoService;
     private TokenService tokenService;
+    private UsuarioRepository repository;
 
     @Override
     @Bean
@@ -51,6 +53,6 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and().csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+        .and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, repository), UsernamePasswordAuthenticationFilter.class);
     }
 }
